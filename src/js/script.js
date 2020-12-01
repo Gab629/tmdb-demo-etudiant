@@ -28,15 +28,34 @@ class MovieDB {
         console.log('ca marche');
         let target = event.currentTarget;
         let data = JSON.parse(target.responseText).results;
-        console.log(data);
+        //console.log(data);
 
         this.afficheDernierFilm(data);
     };
 
     afficheDernierFilm(data) {
-        for (let i = 0; i < data.length; i++) {
-            console.log(data[i].title);
-            console.log(data[i].overview);
+        let section = document.querySelector('.liste-films');
+        console.log(section);
+
+        for (let i = 0; i < this.totalFilm; i++) {
+            //console.log(data[i].title);
+           // console.log(data[i].overview);
+            let article = document.querySelector('.template .film').cloneNode(true);
+
+            section.appendChild(article);
+
+            article.querySelector('h2').innerHTML = data[i].title;
+
+            /*if(data[i].overview != ""){
+                article.querySelector('.description').innerHTML = data[i].overview;
+
+            }else{
+                article.querySelector('.description').innerHTML = "Aucune description disponible";
+            }*/
+
+            article.querySelector('.description').innerHTML = data[i].overview || "Aucune description disponible";
+
+
         }
 
 
