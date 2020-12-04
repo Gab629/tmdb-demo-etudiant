@@ -1,6 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
     let connexion = new MovieDB();
-    connexion.requeteDernierFilms();
+
+    if(document.location.pathname.search('fiche-film.html') > 0){
+        let params = new URL(document.location).searchParams;
+        connexion.requeteInfoFilms(params.get('id'));
+    }else{
+        connexion.requeteDernierFilms();
+    }
+
 });
 
 
@@ -46,12 +53,12 @@ class MovieDB {
 
             article.querySelector('h2').innerHTML = data[i].title;
 
-            /*if(data[i].overview != ""){
-                article.querySelector('.description').innerHTML = data[i].overview;
+            let src = this.imgPath + "w500" + data[i].poster_path;
+            let image = article.querySelector('img');
+            image.setAttribute('src', src);
+            image.setAttribute('alt', data[i].title);
 
-            }else{
-                article.querySelector('.description').innerHTML = "Aucune description disponible";
-            }*/
+            article.querySelector('a').setAttribute('href', 'fiche-film.html?id=' + data[i].id);
 
             article.querySelector('.description').innerHTML = data[i].overview || "Aucune description disponible";
 
@@ -60,4 +67,46 @@ class MovieDB {
 
 
     }
+
+    requeteInfoFilms(movieId) {
+        let requette = new XMLHttpRequest();
+        requette.addEventListener('loadend', this.retourRequeteInfoFilm.bind(this));
+        requette.open('GET', this.baseUrl + 'movie/' + movieId +'?api_key=' + this.apikey + '&language=' + this.lang);
+        requette.send();
+    };
+
+    retourRequeteInfoFilm(event) {
+        console.log('ca marche');
+        let target = event.currentTarget;
+        let data = JSON.parse(target.responseText);
+        console.log(data.title);
+        console.log(target.responseText);
+
+       this.afficheInfoFilm(data);
+    };
+
+    afficheInfoFilm(data) {
+
+        //requetteActeur()
+        document.querySelector('h1').innerHTML = data.title;
+
+
+    }
+
+    requetteActeur(movieId){
+        //GET CREDIT (movieDB) - requette AJAX
+
+    }
+
+    retourRequetteActeur(){
+        //Faire attention au JSON.parse... il ny a pas de results
+
+    }
+
+    afficheActeur(){
+        //boucle pour afficher tous les acteurs avec un cloneNode
+
+    }
+
+
 }
